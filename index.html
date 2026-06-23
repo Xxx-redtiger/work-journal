@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0078)file:///C:/Users/USER/Downloads/%E5%B7%A5%E4%BD%9C%E6%97%A5%E8%AA%8CAPP_6.html -->
+<!-- saved from url=(0078)file:///C:/Users/USER/Downloads/%E5%B7%A5%E4%BD%9C%E6%97%A5%E8%AA%8CAPP_7.html -->
 <html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -63,7 +63,7 @@
   .v-block select { flex: 1; margin-right: 8px; font-size: 14px; }
   .v-sub-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
   .del-btn { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 22px; line-height: 1; padding: 4px 10px; -webkit-appearance: none; appearance: none; font-family: inherit; flex-shrink: 0; touch-action: manipulation; }
-  .add-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 12px 14px; font-size: 14px; color: var(--text2); cursor: pointer; border: 1px dashed var(--border2); border-radius: var(--radius-sm); background: var(--surface); margin-bottom: 10px; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+  .add-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 12px 14px; font-size: 14px; color: var(--text2); cursor: pointer; border: 1px dashed var(--border2); border-radius: var(--radius-sm); background: var(--surface); margin-bottom: 10px; -webkit-appearance: none; appearance: none; font-family: inherit; text-align: left; line-height: 1.4; touch-action: manipulation; -webkit-tap-highlight-color: rgba(0,0,0,0.05); }
   .add-row:active { background: var(--surface2); opacity: 0.7; }
 
   /* Cash row */
@@ -155,10 +155,10 @@
     <div class="field"><label>備註</label><input type="text" id="inp-note" placeholder="天氣、特殊狀況…"></div>
     <div class="section-divider">出車紀錄</div>
     <div id="v-blocks"></div>
-    <div class="add-row" onclick="addVBlock()" role="button" tabindex="0">＋ 新增車輛</div>
+    <button type="button" class="add-row" id="btn-add-vehicle">＋ 新增車輛</button>
     <div class="section-divider">零用金</div>
     <div id="cash-rows"></div>
-    <div class="add-row" onclick="addCashRow()" role="button" tabindex="0">＋ 新增零用金</div>
+    <button type="button" class="add-row" id="btn-add-cash">＋ 新增零用金</button>
     <div style="margin-top:6px">
       <button class="btn btn-primary" onclick="saveEntry()">儲存</button>
     </div>
@@ -260,27 +260,15 @@ const save = () => localStorage.setItem('wj_data', JSON.stringify(DB));
     btn.addEventListener('click', () => switchTab(tabNames[i]));
   });
 
-  // 綁定新增按鈕（用 touchend + click 雙保險）
-  function bindAddBtn(el, fn) {
-    let touched = false;
-    el.addEventListener('touchend', function(e) {
-      e.preventDefault();
-      touched = true;
-      fn();
-    });
-    el.addEventListener('click', function() {
-      if (!touched) fn();
-      touched = false;
-    });
-  }
-  document.querySelectorAll('.add-row').forEach(el => {
-    if (el.getAttribute('onclick') && el.getAttribute('onclick').includes('addVBlock')) {
-      bindAddBtn(el, addVBlock);
-    } else if (el.getAttribute('onclick') && el.getAttribute('onclick').includes('addCashRow')) {
-      bindAddBtn(el, addCashRow);
-    }
+  // 綁定新增按鈕 - 直接用 addEventListener 最可靠
+  document.getElementById('btn-add-vehicle').addEventListener('click', function(e) {
+    e.preventDefault();
+    addVBlock();
   });
-
+  document.getElementById('btn-add-cash').addEventListener('click', function(e) {
+    e.preventDefault();
+    addCashRow();
+  });
   document.querySelector('.btn-primary').addEventListener('click', saveEntry);
 })();
 
