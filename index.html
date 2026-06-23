@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0078)file:///C:/Users/USER/Downloads/%E5%B7%A5%E4%BD%9C%E6%97%A5%E8%AA%8CAPP_4.html -->
+<html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>工作日誌</title>
 <style>
@@ -54,7 +54,7 @@
 
   /* Chips */
   .chip-grid { display: flex; flex-wrap: wrap; gap: 7px; }
-  .chip { padding: 6px 12px; font-size: 13px; border-radius: 20px; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text); user-select: none; transition: all .12s; }
+  .chip { padding: 6px 12px; font-size: 13px; border-radius: 20px; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text); user-select: none; transition: all .12s; -webkit-appearance: none; appearance: none; font-family: inherit; line-height: 1.4; }
   .chip.on { background: var(--text); color: var(--surface); border-color: var(--text); }
 
   /* Vehicle block */
@@ -62,10 +62,9 @@
   .v-block-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   .v-block select { flex: 1; margin-right: 8px; font-size: 14px; }
   .v-sub-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
-  .del-btn { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 20px; line-height: 1; padding: 2px 4px; }
-  .del-btn:hover { color: var(--red); }
-  .add-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 12px; font-size: 13px; color: var(--text2); cursor: pointer; border: 1px dashed var(--border2); border-radius: var(--radius-sm); background: none; margin-bottom: 10px; }
-  .add-row:hover { background: var(--surface2); }
+  .del-btn { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 20px; line-height: 1; padding: 4px 8px; -webkit-appearance: none; appearance: none; font-family: inherit; flex-shrink: 0; }
+  .add-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 12px; font-size: 13px; color: var(--text2); cursor: pointer; border: 1px dashed var(--border2); border-radius: var(--radius-sm); background: var(--surface); margin-bottom: 10px; -webkit-appearance: none; appearance: none; text-align: left; font-family: inherit; line-height: 1.4; }
+  .add-row:active { background: var(--surface2); }
 
   /* Cash row */
   .cash-row { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; }
@@ -74,8 +73,8 @@
   .cash-row input[type=text] { flex: 1.5; min-width: 0; font-size: 13px; }
 
   /* Buttons */
-  .btn { display: block; width: 100%; padding: 13px; font-size: 15px; font-weight: 600; border-radius: var(--radius); cursor: pointer; border: 1px solid var(--border2); background: var(--surface); color: var(--text); margin-bottom: 8px; transition: all .12s; }
-  .btn:active { transform: scale(0.98); }
+  .btn { display: block; width: 100%; padding: 13px; font-size: 15px; font-weight: 600; border-radius: var(--radius); cursor: pointer; border: 1px solid var(--border2); background: var(--surface); color: var(--text); margin-bottom: 8px; transition: all .12s; -webkit-appearance: none; appearance: none; font-family: inherit; text-align: center; line-height: 1.4; }
+  .btn:active { opacity: 0.8; transform: scale(0.98); }
   .btn-primary { background: var(--text); color: var(--surface); border-color: var(--text); }
   .btn-sm { padding: 6px 12px; font-size: 12px; font-weight: 500; width: auto; display: inline-block; margin-bottom: 0; border-radius: var(--radius-sm); }
 
@@ -137,13 +136,13 @@
 <div class="app-header">
   <div class="header-top">
     <div class="app-title">工作日誌</div>
-    <div class="today-badge" id="today-badge"></div>
+    <div class="today-badge" id="today-badge">2026-06-23 (二)</div>
   </div>
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('add')">＋ 新增</button>
-    <button class="tab" onclick="switchTab('list')">紀錄</button>
-    <button class="tab" onclick="switchTab('export')">輸出</button>
-    <button class="tab" onclick="switchTab('stats')">月結</button>
+    <button class="tab active" onclick="switchTab(&#39;add&#39;)">＋ 新增</button>
+    <button class="tab" onclick="switchTab(&#39;list&#39;)">紀錄</button>
+    <button class="tab" onclick="switchTab(&#39;export&#39;)">輸出</button>
+    <button class="tab" onclick="switchTab(&#39;stats&#39;)">月結</button>
   </div>
 </div>
 
@@ -152,7 +151,7 @@
   <!-- 新增 -->
   <div id="pane-add" class="pane active">
     <div class="field"><label>日期</label><input type="date" id="inp-date"></div>
-    <div class="field"><label>請假人員</label><div class="chip-grid" id="absent-chips"></div></div>
+    <div class="field"><label>請假人員</label><div class="chip-grid" id="absent-chips"><button class="chip">豬</button><button class="chip">華</button><button class="chip">呂</button><button class="chip">安</button><button class="chip">陳穎</button><button class="chip">佑</button><button class="chip">阿樹</button><button class="chip">士偉</button><button class="chip">張清柱</button></div></div>
     <div class="field"><label>備註</label><input type="text" id="inp-note" placeholder="天氣、特殊狀況…"></div>
     <div class="section-divider">出車紀錄</div>
     <div id="v-blocks"></div>
@@ -476,5 +475,6 @@ function renderStats() {
     <div class="stat-section"><div class="stat-section-title">主要施工地點</div>${siteRows}</div>`;
 }
 </script>
-</body>
-</html>
+
+
+</body></html>
