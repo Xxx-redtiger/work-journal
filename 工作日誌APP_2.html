@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>工作日誌</title>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0efeb;
+    --border: #e0deda;
+    --border2: #cccbc6;
+    --text: #1a1917;
+    --text2: #6b6a66;
+    --text3: #9b9a96;
+    --accent: #1a1917;
+    --blue: #1d5fa5;
+    --blue-bg: #e8f0fb;
+    --red: #a32d2d;
+    --red-bg: #faeaea;
+    --green: #1a6e3a;
+    --green-bg: #e6f4ec;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; min-height: 100vh; }
+
+  /* Header */
+  .app-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 16px 0; position: sticky; top: 0; z-index: 100; }
+  .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .app-title { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+  .today-badge { font-size: 12px; color: var(--text2); background: var(--surface2); border-radius: 20px; padding: 4px 10px; }
+  .tabs { display: flex; gap: 0; }
+  .tab { flex: 1; padding: 10px 4px; font-size: 13px; font-weight: 500; text-align: center; cursor: pointer; border: none; background: none; color: var(--text2); border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; }
+  .tab.active { color: var(--text); border-bottom: 2px solid var(--text); }
+
+  /* Content */
+  .content { padding: 16px; max-width: 480px; margin: 0 auto; }
+  .pane { display: none; }
+  .pane.active { display: block; }
+
+  /* Form elements */
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .04em; }
+  input[type=text], input[type=date], input[type=number], input[type=month], select, textarea {
+    width: 100%; padding: 10px 12px; font-size: 15px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--surface); color: var(--text); appearance: none; -webkit-appearance: none;
+    transition: border-color .15s;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--border2); }
+  textarea { resize: vertical; min-height: 56px; line-height: 1.5; }
+
+  /* Chips */
+  .chip-grid { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip { padding: 6px 12px; font-size: 13px; border-radius: 20px; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text); user-select: none; transition: all .12s; }
+  .chip.on { background: var(--text); color: var(--surface); border-color: var(--text); }
+
+  /* Vehicle block */
+  .v-block { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 10px; }
+  .v-block-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .v-block select { flex: 1; margin-right: 8px; font-size: 14px; }
+  .v-sub-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
+  .del-btn { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 20px; line-height: 1; padding: 2px 4px; }
+  .del-btn:hover { color: var(--red); }
+  .add-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 12px; font-size: 13px; color: var(--text2); cursor: pointer; border: 1px dashed var(--border2); border-radius: var(--radius-sm); background: none; margin-bottom: 10px; }
+  .add-row:hover { background: var(--surface2); }
+
+  /* Cash row */
+  .cash-row { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; }
+  .cash-row select { width: 68px; flex-shrink: 0; font-size: 13px; padding: 9px 6px; }
+  .cash-row input[type=number] { flex: 1; min-width: 0; }
+  .cash-row input[type=text] { flex: 1.5; min-width: 0; font-size: 13px; }
+
+  /* Buttons */
+  .btn { display: block; width: 100%; padding: 13px; font-size: 15px; font-weight: 600; border-radius: var(--radius); cursor: pointer; border: 1px solid var(--border2); background: var(--surface); color: var(--text); margin-bottom: 8px; transition: all .12s; }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--text); color: var(--surface); border-color: var(--text); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; font-weight: 500; width: auto; display: inline-block; margin-bottom: 0; border-radius: var(--radius-sm); }
+
+  /* Cards */
+  .journal-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 14px; margin-bottom: 10px; }
+  .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .card-date { font-size: 14px; font-weight: 600; }
+  .card-note { font-size: 12px; color: var(--text2); margin-bottom: 6px; }
+  .absent-pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--red-bg); color: var(--red); margin-bottom: 6px; font-weight: 500; }
+  .v-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 5px; font-size: 13px; }
+  .v-name { font-size: 11px; color: var(--text2); min-width: 56px; margin-top: 2px; line-height: 1.4; }
+  .v-detail { flex: 1; }
+  .v-staff { font-weight: 500; margin-bottom: 1px; }
+  .v-loc { font-size: 12px; color: var(--text2); line-height: 1.4; }
+  .cash-line { font-size: 12px; color: var(--blue); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+
+  /* Filter bar */
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 14px; }
+  .filter-bar input, .filter-bar select { font-size: 13px; padding: 9px 10px; }
+
+  /* Export */
+  .export-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px; font-size: 12px; font-family: 'Menlo', 'Courier New', monospace; white-space: pre-wrap; line-height: 1.75; max-height: 340px; overflow-y: auto; margin-bottom: 12px; color: var(--text2); }
+
+  /* Stats */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px; }
+  .stat-card.wide { grid-column: 1/-1; }
+  .stat-lbl { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .stat-val { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; }
+  .stat-unit { font-size: 13px; font-weight: 400; color: var(--text2); margin-left: 3px; }
+  .stat-section { margin-bottom: 20px; }
+  .stat-section-title { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row-name { font-weight: 500; }
+  .bar-wrap { flex: 1; margin: 0 12px; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; background: var(--text); }
+  .stat-num { font-size: 13px; color: var(--text2); min-width: 36px; text-align: right; }
+  .absent-val { color: var(--red); font-weight: 500; }
+  .cash-detail-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .cash-detail-row:last-child { border-bottom: none; }
+  .cash-who { font-weight: 500; }
+  .cash-meta { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .cash-amt { font-weight: 600; color: var(--blue); }
+
+  /* Empty */
+  .empty { text-align: center; color: var(--text3); font-size: 14px; padding: 48px 0; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--text); color: var(--surface); padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; transition: transform .25s ease; z-index: 999; pointer-events: none; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Section divider */
+  .section-divider { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin: 16px 0 8px; }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="header-top">
+    <div class="app-title">工作日誌</div>
+    <div class="today-badge" id="today-badge"></div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('add')">＋ 新增</button>
+    <button class="tab" onclick="switchTab('list')">紀錄</button>
+    <button class="tab" onclick="switchTab('export')">輸出</button>
+    <button class="tab" onclick="switchTab('stats')">月結</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- 新增 -->
+  <div id="pane-add" class="pane active">
+    <div class="field"><label>日期</label><input type="date" id="inp-date"></div>
+    <div class="field"><label>請假人員</label><div class="chip-grid" id="absent-chips"></div></div>
+    <div class="field"><label>備註</label><input type="text" id="inp-note" placeholder="天氣、特殊狀況…"></div>
+    <div class="section-divider">出車紀錄</div>
+    <div id="v-blocks"></div>
+    <button class="add-row" onclick="addVBlock()">＋ 新增車輛</button>
+    <div class="section-divider">零用金</div>
+    <div id="cash-rows"></div>
+    <button class="add-row" onclick="addCashRow()">＋ 新增零用金</button>
+    <div style="margin-top:6px">
+      <button class="btn btn-primary" onclick="saveEntry()">儲存</button>
+    </div>
+  </div>
+
+  <!-- 紀錄 -->
+  <div id="pane-list" class="pane">
+    <div class="filter-bar">
+      <input type="month" id="f-month" style="flex:1" oninput="renderList()">
+      <select id="f-staff" onchange="renderList()" style="flex:1"></select>
+    </div>
+    <div id="list-body"></div>
+  </div>
+
+  <!-- 輸出 -->
+  <div id="pane-export" class="pane">
+    <div class="field"><label>選擇月份</label><input type="month" id="exp-month" oninput="buildExport()"></div>
+    <div class="export-box" id="exp-text">選擇月份後顯示…</div>
+    <button class="btn btn-primary" onclick="copyExport()">複製文字</button>
+    <button class="btn" onclick="dlExport()">下載 .txt</button>
+  </div>
+
+  <!-- 月結統計 -->
+  <div id="pane-stats" class="pane">
+    <div class="field"><label>選擇月份</label><input type="month" id="st-month" oninput="renderStats()"></div>
+    <div id="stats-body"><div class="empty">選擇月份後顯示統計</div></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STAFF = ['豬','華','呂','安','陳穎','佑','阿樹','士偉','張清柱'];
+const VEHICLES = ['1號車','2號車','5號車','6號車','8號車','9號車'];
+const WD = ['日','一','二','三','四','五','六'];
+
+const PRESET = [
+  {date:'2025-05-01',absent:[],note:'',vehicles:[{vehicle:'1號車',staff:['豬','呂','士偉'],location:'欣群草屯 / 冠僖后里'},{vehicle:'5號車',staff:['安','華','佑'],location:'冠僖 / 衛力'}],cash:[]},
+  {date:'2025-05-04',absent:['華'],note:'阿華請假',vehicles:[{vehicle:'1號車',staff:['豬','呂','士偉'],location:'冠僖后里'},{vehicle:'5號車',staff:['安','華','佑'],location:'威震 / 冠僖沙鹿管線'}],cash:[{who:'安',amt:2000,note:''}]},
+  {date:'2025-05-05',absent:[],note:'下雨做半天 / 6號車驗車 / 阿華沒來',vehicles:[{vehicle:'1號車',staff:['豬','呂','士偉'],location:''},{vehicle:'5號車',staff:['安','陳穎','佑'],location:''}],cash:[{who:'豬',amt:5000,note:''},{who:'',amt:5110,note:'買捲尺手套'},{who:'',amt:6000,note:'Google'}]},
+  {date:'2025-05-06',absent:[],note:'阿華沒來',vehicles:[{vehicle:'1號車',staff:['豬','呂','士偉'],location:'冠僖北屯'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'冠僖龍井 / 連吉鹿港'}],cash:[{who:'水',amt:2000,note:''}]},
+  {date:'2025-05-07',absent:[],note:'',vehicles:[{vehicle:'1號車+9號車',staff:['豬','呂','士偉','華'],location:'冠僖新社中興嶺'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'河北停車場 / 冠僖'}],cash:[{who:'安',amt:2000,note:''}]},
+  {date:'2025-05-08',absent:['佑'],note:'阿佑沒來',vehicles:[{vehicle:'1號車+9號車',staff:['豬','呂','士偉','華'],location:'連吉溪州'},{vehicle:'5號車',staff:['安','陳穎'],location:'萬富台3線'}],cash:[{who:'安',amt:2500,note:''}]},
+  {date:'2025-05-11',absent:[],note:'',vehicles:[{vehicle:'1號車+8號車',staff:['豬','呂','士偉','陳穎'],location:'萬富烏日'},{vehicle:'5號車',staff:['安','華'],location:'磐拓 / 冠僖草屯'}],cash:[]},
+  {date:'2025-05-12',absent:[],note:'',vehicles:[{vehicle:'1號車+6號車',staff:['豬','呂','士偉','陳穎'],location:'萬富公路局'},{vehicle:'5號車',staff:['安','華','佑'],location:'冠僖烏日'}],cash:[]},
+  {date:'2025-05-13',absent:[],note:'',vehicles:[{vehicle:'1號車+6號車',staff:['豬','呂','士偉','華'],location:'萬富公路局'},{vehicle:'5號車',staff:['安','佑','陳穎'],location:'冠僖后里'}],cash:[{who:'豬',amt:5000,note:''}]},
+  {date:'2025-05-14',absent:[],note:'下午下雨做半天',vehicles:[{vehicle:'1號車+6號車',staff:['豬','呂','士偉','華'],location:'連吉溪州'},{vehicle:'5號車',staff:['安','佑','陳穎'],location:'梁興 / 冠僖市區綠色'}],cash:[]},
+  {date:'2025-05-15',absent:[],note:'',vehicles:[{vehicle:'1號車+6號車',staff:['豬','呂','士偉','華'],location:'連吉溪州'},{vehicle:'5號車+8號車',staff:['安','佑','陳穎'],location:'敦鴻 / 冠僖市區綠色'}],cash:[{who:'豬',amt:2000,note:'借'},{who:'呂',amt:4000,note:''}]},
+  {date:'2025-05-16',absent:[],note:'',vehicles:[{vehicle:'1號車',staff:['豬','華'],location:'萬富台10 / 冠僖清水管線'},{vehicle:'5號車',staff:['安','佑','陳穎'],location:'冠僖龍井管線'},{vehicle:'6號車',staff:['呂','士偉'],location:'冠僖草屯管線'}],cash:[{who:'豬',amt:5000,note:''},{who:'安',amt:2500,note:''}]},
+  {date:'2025-05-18',absent:[],note:'郭仕偉做半天',vehicles:[{vehicle:'1號車',staff:['豬','華','呂'],location:'冠僖新社收尾 / 連吉溪州'},{vehicle:'5號車',staff:['安','佑','陳穎'],location:'冠僖沙鹿管線'}],cash:[{who:'豬',amt:500,note:''}]},
+  {date:'2025-05-19',absent:[],note:'',vehicles:[{vehicle:'1號車',staff:['豬','華','呂'],location:'連吉二林 / 冠僖大甲'},{vehicle:'5號車',staff:['安','佑','陳穎'],location:'里萬大里 / 冠僖市區管線'}],cash:[{who:'安',amt:2500,note:''},{who:'豬',amt:5000,note:''}]},
+  {date:'2025-05-20',absent:[],note:'',vehicles:[{vehicle:'1號車',staff:['豬','華','呂'],location:'太平廖先生 / 冠僖沙鹿烏日'},{vehicle:'5號車',staff:['安','佑','陳穎'],location:'冠僖市區 / 衛力'}],cash:[]},
+  {date:'2025-05-21',absent:[],note:'裝萬富回復柱23支',vehicles:[{vehicle:'1號車',staff:['豬','華','呂'],location:'連吉彰化 / 冠僖溪州'},{vehicle:'5號車',staff:['安','佑','陳穎'],location:'台肥台中廠 / 管線'}],cash:[{who:'豬',amt:5000,note:''},{who:'安',amt:2500,note:''}]},
+  {date:'2025-05-22',absent:[],note:'',vehicles:[{vehicle:'1號車',staff:['豬','華','呂'],location:'冠僖北屯 / 草屯'},{vehicle:'5號車',staff:['安','佑','陳穎'],location:'磐拓美光'}],cash:[]},
+  {date:'2025-05-23',absent:['呂','華','安'],note:'呂/華/安沒來',vehicles:[{vehicle:'1號車',staff:['豬','陳穎','佑'],location:'連吉溪州'}],cash:[]},
+  {date:'2025-05-25',absent:['佑'],note:'阿佑沒來',vehicles:[{vehicle:'1號車+8號車',staff:['豬','華','呂'],location:'冠僖清水'},{vehicle:'5號車',staff:['安','陳穎'],location:'樂成宮 / 大安管線'}],cash:[{who:'豬',amt:5000,note:''}]},
+  {date:'2025-05-26',absent:[],note:'',vehicles:[{vehicle:'1號車+8號車',staff:['豬','華','呂'],location:'冠僖市區綠色'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'河北停車場'}],cash:[]},
+  {date:'2025-05-27',absent:[],note:'',vehicles:[{vehicle:'1號車+8號車',staff:['豬','華','呂'],location:'巨英仁愛鄉'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'三多利'}],cash:[{who:'豬',amt:10000,note:''}]},
+  {date:'2025-05-28',absent:[],note:'',vehicles:[{vehicle:'1號車+8號車',staff:['豬','華','呂'],location:'德勝奧萬大 / 巨英仁愛鄉'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'冠僖市區 / 神岡'}],cash:[{who:'華',amt:8700,note:'住宿2800*2+2800+300'},{who:'安',amt:2500,note:''}]},
+  {date:'2025-05-29',absent:[],note:'',vehicles:[{vehicle:'1號車+8號車',staff:['豬','華','呂'],location:'萬富神岡'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'冠僖外埔后里'}],cash:[{who:'',amt:25000,note:'五號車保險'}]},
+  {date:'2025-06-01',absent:[],note:'',vehicles:[{vehicle:'1號車',staff:['豬','華','呂'],location:'冠僖大甲'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'冠僖南投'}],cash:[{who:'安',amt:2500,note:''}]},
+  {date:'2025-06-02',absent:[],note:'',vehicles:[{vehicle:'1號車',staff:['豬','華','呂'],location:'欣群草屯'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'冠僖大甲'}],cash:[]},
+  {date:'2025-06-03',absent:[],note:'',vehicles:[{vehicle:'1號車',staff:['豬','華','呂'],location:'欣群草屯'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'冠僖清水'}],cash:[]},
+  {date:'2025-06-04',absent:[],note:'',vehicles:[{vehicle:'1號車+6號車',staff:['豬','華','呂','張清柱'],location:'北屯賴先生刨除 / 冠僖市區 / 崑屹 / 欣群草屯'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'冠僖埔里+草屯'}],cash:[{who:'安',amt:3000,note:''},{who:'豬',amt:5000,note:''}]},
+  {date:'2025-06-05',absent:['陳穎'],note:'陳穎請假',vehicles:[{vehicle:'1號車+6號車',staff:['豬','華','呂','張清柱'],location:'欣群草屯'},{vehicle:'5號車',staff:['安','佑'],location:'偉銓大里 / 冠僖青海路'}],cash:[]},
+  {date:'2025-06-06',absent:[],note:'',vehicles:[{vehicle:'1號車+6號車',staff:['豬','華','呂','張清柱'],location:'冠僖青海路 / 欣群草屯'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'華邦補字 / 冠僖清水'}],cash:[]},
+  {date:'2025-06-08',absent:[],note:'下午下雨',vehicles:[{vehicle:'1號車+6號車',staff:['豬','華','呂','張清柱'],location:'欣群草屯'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'冠僖南投'}],cash:[{who:'安',amt:3000,note:''}]},
+  {date:'2025-06-09',absent:[],note:'下雨休息',vehicles:[{vehicle:'1號車+6號車',staff:['豬','華','呂','張清柱'],location:''},{vehicle:'5號車',staff:['安','陳穎','佑'],location:''}],cash:[]},
+  {date:'2025-06-10',absent:['華','佑'],note:'阿華/阿佑沒來 張清柱離職',vehicles:[{vehicle:'1號車+9號車',staff:['豬','呂','安','陳穎'],location:'興農農藥廠噴漆'}],cash:[{who:'安',amt:4000,note:''},{who:'豬',amt:3000,note:''}]},
+  {date:'2025-06-11',absent:['佑'],note:'阿佑沒來',vehicles:[{vehicle:'1號車',staff:['豬','呂'],location:'上午驗車 下午去欣群草屯'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'上午驗車 下午去欣群草屯'}],cash:[]},
+  {date:'2025-06-12',absent:[],note:'',vehicles:[{vehicle:'1號車',staff:['豬','呂','華'],location:'欣群草屯 / 長洰虎山路'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'冠僖市區 / 新意菖'}],cash:[]},
+  {date:'2025-06-13',absent:[],note:'',vehicles:[{vehicle:'1號車',staff:['豬','呂','華'],location:'長洰虎山路 欣群草屯'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'正隆 / 冠僖市區'}],cash:[]},
+  {date:'2025-06-15',absent:['陳穎'],note:'陳穎請假',vehicles:[{vehicle:'1號車',staff:['豬','呂','華'],location:'長洰虎山路'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'連吉'}],cash:[]},
+  {date:'2025-06-16',absent:[],note:'下雨有來就回去了',vehicles:[{vehicle:'1號車',staff:['豬','呂','華'],location:'長洰虎山路'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'連吉'}],cash:[]},
+  {date:'2025-06-17',absent:[],note:'',vehicles:[{vehicle:'1號車',staff:['豬','呂','華'],location:'長洰虎山路'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'連吉'}],cash:[]},
+  {date:'2025-06-18',absent:[],note:'下雨',vehicles:[{vehicle:'1號車',staff:['豬','呂','華'],location:'長洰虎山路'},{vehicle:'5號車',staff:['安','陳穎','佑'],location:'連吉'}],cash:[{who:'安',amt:5000,note:''},{who:'豬',amt:4000,note:''}]},
+  {date:'2025-06-23',absent:['佑'],note:'阿佑請假',vehicles:[{vehicle:'1號車+9號車',staff:['豬','呂','華','阿樹','安','陳穎'],location:'欣群和平'}],cash:[{who:'豬',amt:5000,note:''}]}
+];
+
+let DB = JSON.parse(localStorage.getItem('wj_data') || 'null');
+if (!DB) { DB = JSON.parse(JSON.stringify(PRESET)); localStorage.setItem('wj_data', JSON.stringify(DB)); }
+const save = () => localStorage.setItem('wj_data', JSON.stringify(DB));
+
+// Init
+(function(){
+  const d = new Date(), s = d.toISOString().slice(0,10);
+  document.getElementById('today-badge').textContent = s + ' (' + WD[d.getDay()] + ')';
+  document.getElementById('inp-date').value = s;
+  document.getElementById('exp-month').value = '2025-05';
+  document.getElementById('f-month').value = '2025-05';
+  document.getElementById('st-month').value = '2025-05';
+  renderAbsentChips();
+  addVBlock();
+})();
+
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach((b,i) => b.classList.toggle('active', ['add','list','export','stats'][i]===t));
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('pane-'+t).classList.add('active');
+  if (t==='list') { populateStaffFilter(); renderList(); }
+  if (t==='export') buildExport();
+  if (t==='stats') renderStats();
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+/* ── 新增 ── */
+function renderAbsentChips() {
+  const el = document.getElementById('absent-chips'); el.innerHTML = '';
+  STAFF.forEach(s => {
+    const c = document.createElement('button'); c.className = 'chip'; c.textContent = s;
+    c.onclick = () => c.classList.toggle('on'); el.appendChild(c);
+  });
+}
+function getAbsent() { return [...document.querySelectorAll('#absent-chips .chip.on')].map(c=>c.textContent); }
+
+let vc=0, cc=0;
+function addVBlock(p) {
+  vc++;
+  const id = 'vb'+vc;
+  const d = document.createElement('div'); d.className = 'v-block'; d.id = id;
+  d.innerHTML = `
+    <div class="v-block-head">
+      <select style="flex:1;margin-right:8px;font-size:13px;padding:8px 10px">${VEHICLES.map(v=>`<option>${v}</option>`).join('')}</select>
+      <button class="del-btn" onclick="document.getElementById('${id}').remove()">×</button>
+    </div>
+    <div class="v-sub-label">人員</div>
+    <div class="chip-grid" id="${id}-s" style="margin-bottom:10px">${STAFF.map(s=>`<button class="chip" style="padding:4px 10px;font-size:12px" onclick="this.classList.toggle('on')">${s}</button>`).join('')}</div>
+    <div class="v-sub-label">施工地點</div>
+    <textarea id="${id}-l" placeholder="施工地點（可多處）"></textarea>`;
+  document.getElementById('v-blocks').appendChild(d);
+  if (p) {
+    const b = document.getElementById(id), vs = b.querySelector('select');
+    if (![...vs.options].find(o=>o.value===p.vehicle)) vs.add(new Option(p.vehicle,p.vehicle));
+    vs.value = p.vehicle;
+    b.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', p.staff.includes(c.textContent)));
+    b.querySelector('textarea').value = p.location;
+  }
+}
+function addCashRow(p) {
+  cc++;
+  const id = 'cr'+cc;
+  const d = document.createElement('div'); d.className = 'cash-row'; d.id = id;
+  d.innerHTML = `<select><option value=""></option>${STAFF.map(s=>`<option>${s}</option>`).join('')}</select>
+    <input type="number" placeholder="金額">
+    <input type="text" placeholder="說明">
+    <button class="del-btn" onclick="document.getElementById('${id}').remove()">×</button>`;
+  document.getElementById('cash-rows').appendChild(d);
+  if (p) { d.querySelector('select').value=p.who||''; d.querySelectorAll('input')[0].value=p.amt; d.querySelectorAll('input')[1].value=p.note||''; }
+}
+function getVehicles() {
+  return [...document.querySelectorAll('.v-block')].map(b => ({
+    vehicle: b.querySelector('select').value,
+    staff: [...b.querySelectorAll('.chip.on')].map(c=>c.textContent),
+    location: b.querySelector('textarea').value.trim()
+  })).filter(v=>v.staff.length||v.location);
+}
+function getCash() {
+  return [...document.querySelectorAll('.cash-row')].map(r => ({
+    who: r.querySelector('select').value||'',
+    amt: Number(r.querySelectorAll('input')[0].value||0),
+    note: r.querySelectorAll('input')[1].value||''
+  })).filter(r=>r.amt);
+}
+function saveEntry() {
+  const date = document.getElementById('inp-date').value;
+  if (!date) { toast('請選擇日期'); return; }
+  const entry = { date, absent:getAbsent(), note:document.getElementById('inp-note').value.trim(), vehicles:getVehicles(), cash:getCash() };
+  const idx = DB.findIndex(e=>e.date===date);
+  if (idx>=0) DB[idx]=entry; else DB.push(entry);
+  DB.sort((a,b)=>a.date.localeCompare(b.date));
+  save(); resetForm(); toast('已儲存 '+date);
+}
+function resetForm() {
+  document.getElementById('inp-note').value='';
+  document.querySelectorAll('#absent-chips .chip').forEach(c=>c.classList.remove('on'));
+  document.getElementById('v-blocks').innerHTML=''; document.getElementById('cash-rows').innerHTML='';
+  vc=0; cc=0; addVBlock();
+}
+
+/* ── 紀錄 ── */
+function populateStaffFilter() {
+  const sel = document.getElementById('f-staff'), cur = sel.value;
+  sel.innerHTML = '<option value="">全部人員</option>' + STAFF.map(s=>`<option ${cur===s?'selected':''}>${s}</option>`).join('');
+}
+function renderList() {
+  const month = document.getElementById('f-month').value;
+  const staff = document.getElementById('f-staff').value;
+  let list = DB.filter(e=>!month||e.date.startsWith(month));
+  if (staff) list = list.filter(e=>e.vehicles.some(v=>v.staff.includes(staff)));
+  const body = document.getElementById('list-body');
+  if (!list.length) { body.innerHTML='<div class="empty">此月份無紀錄</div>'; return; }
+  body.innerHTML = list.map(e => {
+    const wd = WD[new Date(e.date+'T00:00:00').getDay()];
+    const absent = e.absent?.length ? `<div class="absent-pill">請假：${e.absent.join('、')}</div>` : '';
+    const note = e.note ? `<div class="card-note">${e.note}</div>` : '';
+    const vrows = e.vehicles.map(v=>`<div class="v-row"><div class="v-name">${v.vehicle}</div><div class="v-detail"><div class="v-staff">${v.staff.join(' ')}</div>${v.location?`<div class="v-loc">${v.location}</div>`:''}</div></div>`).join('');
+    const cash = e.cash?.length ? `<div class="cash-line">💰 ${e.cash.map(c=>(c.who?c.who+' ':'')+(c.note?c.note+' ':'')+'$'+c.amt.toLocaleString()).join('　')}</div>` : '';
+    return `<div class="journal-card"><div class="card-head"><div class="card-date">${e.date.slice(5).replace('-','/')} (${wd})</div><button class="btn btn-sm" onclick="editEntry('${e.date}')">編輯</button></div>${absent}${note}${vrows}${cash}</div>`;
+  }).join('');
+}
+function editEntry(date) {
+  const e = DB.find(x=>x.date===date); if(!e) return;
+  switchTab('add');
+  setTimeout(()=>{
+    document.getElementById('inp-date').value=e.date;
+    document.getElementById('inp-note').value=e.note||'';
+    document.querySelectorAll('#absent-chips .chip').forEach(c=>c.classList.toggle('on',e.absent?.includes(c.textContent)));
+    document.getElementById('v-blocks').innerHTML=''; vc=0;
+    e.vehicles.forEach(v=>addVBlock(v));
+    document.getElementById('cash-rows').innerHTML=''; cc=0;
+    e.cash?.forEach(c=>addCashRow(c));
+  },50);
+}
+
+/* ── 輸出 ── */
+function buildExport() {
+  const month = document.getElementById('exp-month').value;
+  if (!month) { document.getElementById('exp-text').textContent='選擇月份後顯示…'; return; }
+  const list = DB.filter(e=>e.date.startsWith(month));
+  if (!list.length) { document.getElementById('exp-text').textContent='此月份無紀錄'; return; }
+  document.getElementById('exp-text').textContent = list.map(e=>{
+    const d = new Date(e.date+'T00:00:00');
+    let t = `${e.date.slice(5).replace('-','/')} (${WD[d.getDay()]})`;
+    if (e.absent?.length) t += `  ＊${e.absent.join('/')}請假`;
+    if (e.note) t += `  ${e.note}`;
+    t += '\n';
+    e.vehicles.forEach(v=>{ t += `  ${v.vehicle}　${v.staff.join(' ')}　${v.location}\n`; });
+    if (e.cash?.length) t += `  ［零用金］${e.cash.map(c=>(c.who?c.who+' ':'')+(c.note?c.note+' ':'')+'$'+c.amt.toLocaleString()).join('  ')}\n`;
+    return t;
+  }).join('\n');
+}
+function copyExport() {
+  const t = document.getElementById('exp-text').textContent;
+  if (!t||t.startsWith('選擇')) return;
+  navigator.clipboard.writeText(t).then(()=>toast('已複製！'));
+}
+function dlExport() {
+  const t = document.getElementById('exp-text').textContent;
+  const month = document.getElementById('exp-month').value;
+  if (!t||t.startsWith('選擇')) return;
+  const a = document.createElement('a');
+  a.href = 'data:text/plain;charset=utf-8,'+encodeURIComponent(t);
+  a.download = (month||'工作日誌')+'_工作日誌.txt'; a.click();
+}
+
+/* ── 月結統計 ── */
+function renderStats() {
+  const month = document.getElementById('st-month').value;
+  const body = document.getElementById('stats-body');
+  if (!month) { body.innerHTML='<div class="empty">選擇月份後顯示統計</div>'; return; }
+  const list = DB.filter(e=>e.date.startsWith(month));
+  if (!list.length) { body.innerHTML='<div class="empty">此月份無紀錄</div>'; return; }
+
+  const workDays = list.filter(e=>e.vehicles.some(v=>v.staff.length>0)).length;
+  const rainDays = list.filter(e=>e.note&&(e.note.includes('下雨')||e.note.includes('休息'))).length;
+  const totalCash = list.reduce((s,e)=>s+(e.cash||[]).reduce((a,c)=>a+c.amt,0),0);
+
+  const staffDays = {};
+  list.forEach(e=>e.vehicles.forEach(v=>v.staff.forEach(s=>{staffDays[s]=(staffDays[s]||0)+1})));
+  const absentCount = {};
+  list.forEach(e=>(e.absent||[]).forEach(s=>{absentCount[s]=(absentCount[s]||0)+1}));
+  const cashByDate = list.flatMap(e=>(e.cash||[]).filter(c=>c.amt>0).map(c=>({date:e.date,...c})));
+  const siteCount = {};
+  list.forEach(e=>e.vehicles.forEach(v=>v.location.split(/[\/、,，]/).map(s=>s.trim()).filter(Boolean).forEach(s=>{siteCount[s]=(siteCount[s]||0)+1})));
+  const topSites = Object.entries(siteCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const vDays = {};
+  list.forEach(e=>e.vehicles.forEach(v=>{vDays[v.vehicle]=(vDays[v.vehicle]||0)+1}));
+
+  const maxD = Math.max(...Object.values(staffDays),1);
+
+  const staffRows = Object.entries(staffDays).sort((a,b)=>b[1]-a[1]).map(([n,d])=>`
+    <div class="stat-row">
+      <div class="stat-row-name">${n}</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${Math.round(d/maxD*100)}%"></div></div>
+      <div class="stat-num">${d} 天</div>
+    </div>`).join('');
+
+  const absentRows = Object.entries(absentCount).sort((a,b)=>b[1]-a[1]).map(([n,c])=>`
+    <div class="stat-row"><div class="stat-row-name">${n}</div><div class="absent-val">${c} 次</div></div>`).join('') ||
+    '<div style="font-size:13px;color:var(--text3);padding:10px 0">本月無請假紀錄</div>';
+
+  const vRows = Object.entries(vDays).sort((a,b)=>b[1]-a[1]).map(([v,d])=>`
+    <div class="stat-row">
+      <div class="stat-row-name">${v}</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${Math.round(d/workDays*100)}%"></div></div>
+      <div class="stat-num">${d} 天</div>
+    </div>`).join('');
+
+  const cashDetailRows = cashByDate.map(c=>`
+    <div class="cash-detail-row">
+      <div><div class="cash-who">${c.who||'—'}${c.note?' · '+c.note:''}</div><div class="cash-meta">${c.date.slice(5).replace('-','/')}</div></div>
+      <div class="cash-amt">$${c.amt.toLocaleString()}</div>
+    </div>`).join('') || '<div style="font-size:13px;color:var(--text3);padding:10px 0">本月無零用金紀錄</div>';
+
+  const siteRows = topSites.map(([s,c])=>`
+    <div class="stat-row"><div>${s}</div><div class="stat-num">${c} 次</div></div>`).join('');
+
+  body.innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-lbl">出勤工作日</div><div class="stat-val">${workDays}<span class="stat-unit">天</span></div></div>
+      <div class="stat-card"><div class="stat-lbl">下雨／休息</div><div class="stat-val">${rainDays}<span class="stat-unit">天</span></div></div>
+      <div class="stat-card wide"><div class="stat-lbl">零用金合計</div><div class="stat-val">$${totalCash.toLocaleString()}</div></div>
+    </div>
+    <div class="stat-section"><div class="stat-section-title">人員出勤天數</div>${staffRows}</div>
+    <div class="stat-section"><div class="stat-section-title">請假紀錄</div>${absentRows}</div>
+    <div class="stat-section"><div class="stat-section-title">車輛出勤天數</div>${vRows}</div>
+    <div class="stat-section"><div class="stat-section-title">零用金明細</div>${cashDetailRows}</div>
+    <div class="stat-section"><div class="stat-section-title">主要施工地點</div>${siteRows}</div>`;
+}
+</script>
+</body>
+</html>
