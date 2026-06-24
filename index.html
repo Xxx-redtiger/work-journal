@@ -245,7 +245,12 @@ function buildAbsentChips(){
   var el=document.getElementById('absent-chips');el.innerHTML='';
   STAFF.forEach(function(s){
     var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=s;
-    b.onclick=function(){this.className=this.className==='chip'?'chip on':'chip';};
+    function toggle(e){
+      e.preventDefault();
+      b.className=b.className==='chip'?'chip on':'chip';
+    }
+    b.addEventListener('touchend',toggle);
+    b.addEventListener('click',function(e){if(!('ontouchstart' in window))toggle(e);});
     el.appendChild(b);
   });
 }
@@ -274,10 +279,17 @@ function addVBlock(p){
   // 人員
   var sl=document.createElement('div');sl.className='sublbl';sl.textContent='人員';div.appendChild(sl);
   var cg=document.createElement('div');cg.className='chips';cg.style.marginBottom='10px';
-  // 用 staff-chip class，避免和其他 .chip.on 混淆
   STAFF.forEach(function(s){
     var b=document.createElement('button');b.type='button';b.className='staff-chip';b.textContent=s;
-    b.onclick=function(){this.className=this.className==='staff-chip'?'staff-chip on':'staff-chip';};
+    function toggleStaff(e){
+      e.preventDefault();
+      b.className=b.className==='staff-chip'?'staff-chip on':'staff-chip';
+    }
+    b.addEventListener('touchend',toggleStaff);
+    b.addEventListener('click',function(e){
+      // 只在非觸控環境下響應 click
+      if(!('ontouchstart' in window))toggleStaff(e);
+    });
     cg.appendChild(b);
   });
   div.appendChild(cg);
@@ -297,22 +309,28 @@ function addVBlock(p){
     chipArea.innerHTML='';
     SITES[curCat].forEach(function(site){
       var b=document.createElement('button');b.type='button';b.className='site-chip';b.textContent=site;
-      b.onclick=function(){
+      function addSite(e){
+        e.preventDefault();
         var cur=ta.value.trim();
         ta.value=cur?cur+' / '+site:site;
-      };
+      }
+      b.addEventListener('touchend',addSite);
+      b.addEventListener('click',function(e){if(!('ontouchstart' in window))addSite(e);});
       chipArea.appendChild(b);
     });
   }
   cats.forEach(function(cat){
     var b=document.createElement('button');b.type='button';
     b.className='site-cat'+(cat===curCat?' act':'');b.textContent=cat;
-    b.onclick=function(){
+    function selectCat(e){
+      e.preventDefault();
       curCat=cat;
       Array.prototype.slice.call(catBar.querySelectorAll('.site-cat')).forEach(function(x){x.className='site-cat';});
       b.className='site-cat act';
       showSites();
-    };
+    }
+    b.addEventListener('touchend',selectCat);
+    b.addEventListener('click',function(e){if(!('ontouchstart' in window))selectCat(e);});
     catBar.appendChild(b);
   });
   ss.appendChild(catBar);ss.appendChild(chipArea);
