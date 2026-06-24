@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- saved from url=(0078)file:///C:/Users/USER/Downloads/%E5%B7%A5%E4%BD%9C%E6%97%A5%E8%AA%8CAPP_9.html -->
-<html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -108,7 +108,7 @@ textarea{resize:vertical;min-height:56px;line-height:1.5}
 <div class="hdr">
   <div class="hdr-top">
     <div class="hdr-title">工作日誌</div>
-    <div class="hdr-date" id="hdr-date">2026-06-23 (二)</div>
+    <div class="hdr-date" id="hdr-date"></div>
   </div>
   <div class="tabs">
     <button type="button" class="tab on" id="tab-add">＋ 新增</button>
@@ -123,10 +123,10 @@ textarea{resize:vertical;min-height:56px;line-height:1.5}
   <!-- 新增 -->
   <div class="pane on" id="pane-add">
     <div class="fld"><label class="fld-lbl">日期</label><input type="date" id="inp-date"></div>
-    <div class="fld"><label class="fld-lbl">請假人員</label><div class="chips" id="absent-chips"><button type="button" class="chip">豬</button><button type="button" class="chip">華</button><button type="button" class="chip">呂</button><button type="button" class="chip">安</button><button type="button" class="chip">陳穎</button><button type="button" class="chip">佑</button><button type="button" class="chip">阿樹</button><button type="button" class="chip">士偉</button><button type="button" class="chip">張清柱</button></div></div>
+    <div class="fld"><label class="fld-lbl">請假人員</label><div class="chips" id="absent-chips"></div></div>
     <div class="fld"><label class="fld-lbl">備註</label><input type="text" id="inp-note" placeholder="天氣、特殊狀況…"></div>
     <div class="divider">出車紀錄</div>
-    <div id="v-blocks"><div class="vblock" id="vb1"><div class="vblock-head"><select><option value="1號車">1號車</option><option value="2號車">2號車</option><option value="5號車">5號車</option><option value="6號車">6號車</option><option value="8號車">8號車</option><option value="9號車">9號車</option></select><button type="button" class="delbtn">×</button></div><div class="sublbl">人員</div><div class="chips" style="margin-bottom: 10px;"><button type="button" class="chip" style="padding: 4px 10px; font-size: 12px;">豬</button><button type="button" class="chip" style="padding: 4px 10px; font-size: 12px;">華</button><button type="button" class="chip" style="padding: 4px 10px; font-size: 12px;">呂</button><button type="button" class="chip" style="padding: 4px 10px; font-size: 12px;">安</button><button type="button" class="chip" style="padding: 4px 10px; font-size: 12px;">陳穎</button><button type="button" class="chip" style="padding: 4px 10px; font-size: 12px;">佑</button><button type="button" class="chip" style="padding: 4px 10px; font-size: 12px;">阿樹</button><button type="button" class="chip" style="padding: 4px 10px; font-size: 12px;">士偉</button><button type="button" class="chip" style="padding: 4px 10px; font-size: 12px;">張清柱</button></div><div class="sublbl">施工地點</div><textarea placeholder="施工地點（可多處）"></textarea><div class="site-picker"><div class="sublbl" style="margin-top: 8px;">快速選擇工地</div><div class="site-cats"><button type="button" class="site-cat on">冠僖</button><button type="button" class="site-cat">欣群</button><button type="button" class="site-cat">連吉</button><button type="button" class="site-cat">萬富</button><button type="button" class="site-cat">其他</button></div><div class="site-chips"><button type="button" class="site-chip">冠僖大甲</button><button type="button" class="site-chip">冠僖后里</button><button type="button" class="site-chip">冠僖北屯</button><button type="button" class="site-chip">冠僖南投</button><button type="button" class="site-chip">冠僖清水</button><button type="button" class="site-chip">冠僖草屯</button><button type="button" class="site-chip">冠僖龍井</button><button type="button" class="site-chip">冠僖沙鹿</button><button type="button" class="site-chip">冠僖市區</button><button type="button" class="site-chip">冠僖烏日</button><button type="button" class="site-chip">冠僖埔里</button><button type="button" class="site-chip">冠僖外埔</button><button type="button" class="site-chip">冠僖青海路</button><button type="button" class="site-chip">冠僖新社</button><button type="button" class="site-chip">冠僖溪州</button></div></div></div></div>
+    <div id="v-blocks"></div>
     <button type="button" class="addbtn" id="btn-veh">＋ 新增車輛</button>
     <div class="divider">零用金</div>
     <div id="cash-rows"></div>
@@ -210,7 +210,18 @@ var PRESET=[
 ];
 
 var DB=JSON.parse(localStorage.getItem('wj_final')||'null');
-if(!DB){DB=JSON.parse(JSON.stringify(PRESET));localStorage.setItem('wj_final',JSON.stringify(DB));}
+if(!DB){
+  var old=JSON.parse(localStorage.getItem('wj_entries2')||localStorage.getItem('wj_v3')||localStorage.getItem('wj_entries')||'null');
+  if(old&&old.length){
+    var merged={};
+    JSON.parse(JSON.stringify(PRESET)).forEach(function(e){merged[e.date]=e;});
+    old.forEach(function(e){merged[e.date]=e;});
+    DB=Object.keys(merged).sort().map(function(k){return merged[k];});
+  } else {
+    DB=JSON.parse(JSON.stringify(PRESET));
+  }
+  localStorage.setItem('wj_final',JSON.stringify(DB));
+}
 function dbSave(){localStorage.setItem('wj_final',JSON.stringify(DB));}
 
 function toast(msg){
@@ -220,12 +231,14 @@ function toast(msg){
 }
 
 /* ── 初始化 ── */
-var d=new Date(),ds=d.toISOString().slice(0,10);
+var d=new Date();
+var ds=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
 document.getElementById('hdr-date').textContent=ds+' ('+WD[d.getDay()]+')';
 document.getElementById('inp-date').value=ds;
-document.getElementById('exp-month').value='2025-05';
-document.getElementById('f-month').value='2025-05';
-document.getElementById('st-month').value='2025-05';
+var curMonth=ds.slice(0,7);
+document.getElementById('exp-month').value=curMonth;
+document.getElementById('f-month').value=curMonth;
+document.getElementById('st-month').value=curMonth;
 
 /* ── 分頁切換 ── */
 function switchTab(name){
@@ -541,6 +554,5 @@ function renderStats(){
 }
 document.getElementById('st-month').onchange=renderStats;
 </script>
-
-
-</body></html>
+</body>
+</html>
