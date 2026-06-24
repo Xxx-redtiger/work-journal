@@ -9,48 +9,36 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,sans-serif;background:#f5f4f0;color:#1a1917;font-size:15px;min-height:100vh}
-/* header */
 .hdr{background:#fff;border-bottom:1px solid #e0deda;padding:14px 16px 0;position:sticky;top:0;z-index:100}
 .hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .hdr-title{font-size:18px;font-weight:600}
 .hdr-date{font-size:12px;color:#6b6a66;background:#f0efeb;border-radius:20px;padding:4px 10px}
-/* tabs */
 .tabs{display:flex}
 .tab{flex:1;padding:10px 4px;font-size:13px;font-weight:500;text-align:center;color:#6b6a66;border:none;background:none;border-bottom:2px solid transparent;font-family:-apple-system,sans-serif}
 .tab.on{color:#1a1917;border-bottom:2px solid #1a1917}
-/* panes */
 .wrap{padding:16px;max-width:480px;margin:0 auto}
 .pane{display:none}
 .pane.on{display:block}
-/* fields */
 .fld{margin-bottom:14px}
 .fld-lbl{display:block;font-size:11px;font-weight:600;color:#9b9a96;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
 input[type=text],input[type=date],input[type=number],input[type=month],select,textarea{width:100%;padding:10px 12px;font-size:15px;border:1px solid #e0deda;border-radius:6px;background:#fff;color:#1a1917;-webkit-appearance:none;font-family:-apple-system,sans-serif}
 textarea{resize:vertical;min-height:56px;line-height:1.5}
-/* chips */
 .chips{display:flex;flex-wrap:wrap;gap:7px}
 .chip{padding:7px 13px;font-size:13px;border-radius:20px;border:1px solid #e0deda;background:#fff;color:#1a1917;font-family:-apple-system,sans-serif;-webkit-appearance:none}
 .chip.on{background:#1a1917;color:#fff;border-color:#1a1917}
-/* divider */
 .divider{font-size:11px;font-weight:600;color:#9b9a96;text-transform:uppercase;letter-spacing:.05em;margin:16px 0 8px}
-/* vehicle block */
 .vblock{background:#f0efeb;border:1px solid #e0deda;border-radius:10px;padding:12px;margin-bottom:10px}
 .vblock-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.vblock select{flex:1;margin-right:8px;font-size:13px;padding:8px 10px}
+.vblock-head select{flex:1;margin-right:8px;font-size:13px;padding:8px 10px}
 .sublbl{font-size:11px;font-weight:600;color:#9b9a96;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
 .delbtn{background:none;border:none;font-size:24px;color:#9b9a96;padding:4px 8px;font-family:-apple-system,sans-serif;-webkit-appearance:none;min-width:40px;min-height:40px}
-/* cash row */
 .cashrow{display:flex;gap:6px;margin-bottom:8px;align-items:center}
 .cashrow select{width:72px;flex-shrink:0;font-size:13px;padding:9px 6px}
 .cashrow input[type=number]{flex:1;min-width:0}
 .cashrow input[type=text]{flex:1.5;min-width:0;font-size:13px}
-/* ADD buttons - using <a> tag trick for Safari */
-.addbtn{display:block;width:100%;padding:13px 14px;font-size:14px;color:#6b6a66;border:1px dashed #cccbc6;border-radius:6px;background:#fff;margin-bottom:10px;text-align:left;text-decoration:none;font-family:-apple-system,sans-serif;-webkit-appearance:none}
-/* save button */
+.addbtn{display:block;width:100%;padding:13px 14px;font-size:14px;color:#6b6a66;border:1px dashed #cccbc6;border-radius:6px;background:#fff;margin-bottom:10px;text-align:left;font-family:-apple-system,sans-serif;-webkit-appearance:none;min-height:48px}
 .savebtn{display:block;width:100%;padding:14px;font-size:16px;font-weight:600;color:#fff;background:#1a1917;border:none;border-radius:10px;margin-top:6px;font-family:-apple-system,sans-serif;-webkit-appearance:none;min-height:50px}
-/* small btn */
 .smbtn{padding:7px 13px;font-size:12px;font-weight:500;color:#1a1917;background:#fff;border:1px solid #cccbc6;border-radius:6px;font-family:-apple-system,sans-serif;-webkit-appearance:none;min-height:36px}
-/* cards */
 .card{background:#fff;border:1px solid #e0deda;border-radius:10px;padding:13px 14px;margin-bottom:10px}
 .card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
 .card-date{font-size:14px;font-weight:600}
@@ -61,14 +49,11 @@ textarea{resize:vertical;min-height:56px;line-height:1.5}
 .vstaff{font-weight:500;margin-bottom:1px}
 .vloc{font-size:12px;color:#6b6a66;line-height:1.4}
 .cashline{font-size:12px;color:#1d5fa5;margin-top:8px;padding-top:8px;border-top:1px solid #e0deda}
-/* filter */
 .fbar{display:flex;gap:8px;margin-bottom:14px}
 .fbar input,.fbar select{font-size:13px;padding:9px 10px;flex:1}
-/* export */
 .expbox{background:#f0efeb;border:1px solid #e0deda;border-radius:10px;padding:13px;font-size:12px;font-family:'Menlo','Courier New',monospace;white-space:pre-wrap;line-height:1.75;max-height:340px;overflow-y:auto;margin-bottom:12px;color:#6b6a66}
 .expbtn{display:block;width:100%;padding:13px;font-size:15px;font-weight:600;border-radius:10px;border:1px solid #cccbc6;background:#fff;color:#1a1917;margin-bottom:8px;font-family:-apple-system,sans-serif;-webkit-appearance:none;min-height:50px}
 .expbtn.pri{background:#1a1917;color:#fff;border-color:#1a1917}
-/* stats */
 .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
 .scard{background:#fff;border:1px solid #e0deda;border-radius:10px;padding:13px}
 .scard.wide{grid-column:1/-1}
@@ -88,19 +73,20 @@ textarea{resize:vertical;min-height:56px;line-height:1.5}
 .cashdr:last-child{border-bottom:none}
 .cashmeta{font-size:11px;color:#9b9a96;margin-top:1px}
 .cashamt{font-weight:600;color:#1d5fa5}
-/* site quick select */
-.site-picker{margin-top:6px}
-.site-cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
-.site-cat{padding:5px 11px;font-size:12px;border-radius:20px;border:1px solid #e0deda;background:#fff;color:#6b6a66;font-family:-apple-system,sans-serif;-webkit-appearance:none}
-.site-cat.on{background:#1a1917;color:#fff;border-color:#1a1917}
-.site-chips{display:flex;flex-wrap:wrap;gap:6px}
-.site-chip{padding:6px 11px;font-size:12px;border-radius:6px;border:1px solid #e0deda;background:#f0efeb;color:#1a1917;font-family:-apple-system,sans-serif;-webkit-appearance:none;text-align:left}
-.site-chip:active{background:#e0deda}
-/* empty */
 .empty{text-align:center;color:#9b9a96;font-size:14px;padding:48px 0}
-/* toast */
 .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a1917;color:#fff;padding:10px 22px;border-radius:20px;font-size:14px;font-weight:500;z-index:999;pointer-events:none;white-space:nowrap;transition:transform .25s}
 .toast.show{transform:translateX(-50%) translateY(0)}
+/* 工地快速選單 */
+.site-section{margin-top:8px}
+.site-cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.site-cat{padding:5px 11px;font-size:12px;border-radius:20px;border:1px solid #e0deda;background:#fff;color:#6b6a66;font-family:-apple-system,sans-serif;-webkit-appearance:none}
+.site-cat.act{background:#1a1917;color:#fff;border-color:#1a1917}
+.site-chips{display:flex;flex-wrap:wrap;gap:6px}
+.site-chip{padding:6px 11px;font-size:12px;border-radius:6px;border:1px solid #e0deda;background:#fff;color:#1a1917;font-family:-apple-system,sans-serif;-webkit-appearance:none;text-align:left}
+.site-chip:active{background:#f0efeb}
+/* 人員 chips 在 vblock 裡用小一點的樣式 */
+.staff-chip{padding:5px 10px;font-size:12px;border-radius:20px;border:1px solid #e0deda;background:#fff;color:#1a1917;font-family:-apple-system,sans-serif;-webkit-appearance:none}
+.staff-chip.on{background:#1a1917;color:#fff;border-color:#1a1917}
 </style>
 </head>
 <body>
@@ -119,8 +105,6 @@ textarea{resize:vertical;min-height:56px;line-height:1.5}
 </div>
 
 <div class="wrap">
-
-  <!-- 新增 -->
   <div class="pane on" id="pane-add">
     <div class="fld"><label class="fld-lbl">日期</label><input type="date" id="inp-date"></div>
     <div class="fld"><label class="fld-lbl">請假人員</label><div class="chips" id="absent-chips"></div></div>
@@ -133,8 +117,6 @@ textarea{resize:vertical;min-height:56px;line-height:1.5}
     <button type="button" class="addbtn" id="btn-cash">＋ 新增零用金</button>
     <button type="button" class="savebtn" id="btn-save">儲存</button>
   </div>
-
-  <!-- 紀錄 -->
   <div class="pane" id="pane-list">
     <div class="fbar">
       <input type="month" id="f-month">
@@ -142,21 +124,16 @@ textarea{resize:vertical;min-height:56px;line-height:1.5}
     </div>
     <div id="list-body"></div>
   </div>
-
-  <!-- 輸出 -->
   <div class="pane" id="pane-export">
     <div class="fld"><label class="fld-lbl">選擇月份</label><input type="month" id="exp-month"></div>
     <div class="expbox" id="exp-text">選擇月份後顯示…</div>
     <button type="button" class="expbtn pri" id="btn-copy">複製文字</button>
     <button type="button" class="expbtn" id="btn-dl">下載 .txt</button>
   </div>
-
-  <!-- 月結 -->
   <div class="pane" id="pane-stats">
     <div class="fld"><label class="fld-lbl">選擇月份</label><input type="month" id="st-month"></div>
     <div id="stats-body"><div class="empty">選擇月份後顯示統計</div></div>
   </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
@@ -165,6 +142,13 @@ textarea{resize:vertical;min-height:56px;line-height:1.5}
 var STAFF=['豬','華','呂','安','陳穎','佑','阿樹','士偉','張清柱'];
 var VEHICLES=['1號車','2號車','5號車','6號車','8號車','9號車'];
 var WD=['日','一','二','三','四','五','六'];
+var SITES={
+  '冠僖':['冠僖大甲','冠僖后里','冠僖北屯','冠僖南投','冠僖清水','冠僖草屯','冠僖龍井','冠僖沙鹿','冠僖市區','冠僖烏日','冠僖埔里','冠僖外埔','冠僖青海路','冠僖新社','冠僖溪州'],
+  '欣群':['欣群草屯','欣群和平'],
+  '連吉':['連吉溪州','連吉二林','連吉鹿港','連吉彰化'],
+  '萬富':['萬富烏日','萬富公路局','萬富台3線','萬富台10','萬富神岡'],
+  '其他':['長洰虎山路','興農農藥廠','巨英仁愛鄉','德勝奧萬大','偉銓大里','磐拓美光','台肥台中廠','正隆','河北停車場','樂成宮','三多利','敦鴻','梁興','崑屹','華邦']
+};
 
 var PRESET=[
   {date:'2025-05-01',absent:[],note:'',vehicles:[{vehicle:'1號車',staff:['豬','呂','士偉'],location:'欣群草屯 / 冠僖后里'},{vehicle:'5號車',staff:['安','華','佑'],location:'冠僖 / 衛力'}],cash:[]},
@@ -209,6 +193,7 @@ var PRESET=[
   {date:'2025-06-23',absent:['佑'],note:'阿佑請假',vehicles:[{vehicle:'1號車+9號車',staff:['豬','呂','華','阿樹','安','陳穎'],location:'欣群和平'}],cash:[{who:'豬',amt:5000,note:''}]}
 ];
 
+// 載入資料（自動從舊版 key 救回）
 var DB=JSON.parse(localStorage.getItem('wj_final')||'null');
 if(!DB){
   var old=JSON.parse(localStorage.getItem('wj_entries2')||localStorage.getItem('wj_v3')||localStorage.getItem('wj_entries')||'null');
@@ -230,17 +215,17 @@ function toast(msg){
   setTimeout(function(){el.className='toast';},2200);
 }
 
-/* ── 初始化 ── */
-var d=new Date();
-var ds=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
-document.getElementById('hdr-date').textContent=ds+' ('+WD[d.getDay()]+')';
-document.getElementById('inp-date').value=ds;
+// 日期（用本地時間）
+var now=new Date();
+var ds=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');
 var curMonth=ds.slice(0,7);
+document.getElementById('hdr-date').textContent=ds+' ('+WD[now.getDay()]+')';
+document.getElementById('inp-date').value=ds;
 document.getElementById('exp-month').value=curMonth;
 document.getElementById('f-month').value=curMonth;
 document.getElementById('st-month').value=curMonth;
 
-/* ── 分頁切換 ── */
+// 分頁切換
 function switchTab(name){
   ['add','list','export','stats'].forEach(function(t){
     document.getElementById('tab-'+t).className='tab'+(t===name?' on':'');
@@ -255,141 +240,131 @@ document.getElementById('tab-list').onclick=function(){switchTab('list');};
 document.getElementById('tab-export').onclick=function(){switchTab('export');};
 document.getElementById('tab-stats').onclick=function(){switchTab('stats');};
 
-/* ── 請假 chips ── */
+// 請假 chips
 function buildAbsentChips(){
   var el=document.getElementById('absent-chips');el.innerHTML='';
   STAFF.forEach(function(s){
-    var b=document.createElement('button');
-    b.type='button';b.className='chip';b.textContent=s;
-    b.onclick=function(){b.className=b.className==='chip'?'chip on':'chip';};
+    var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=s;
+    b.onclick=function(){this.className=this.className==='chip'?'chip on':'chip';};
     el.appendChild(b);
   });
 }
 buildAbsentChips();
-function getAbsent(){return Array.prototype.slice.call(document.querySelectorAll('#absent-chips .chip.on')).map(function(c){return c.textContent;});}
+function getAbsent(){
+  return Array.prototype.slice.call(document.querySelectorAll('#absent-chips .chip.on')).map(function(c){return c.textContent;});
+}
 
-/* ── 出車區塊 ── */
+// 出車區塊
 var vc=0;
 function addVBlock(p){
-  vc++;var id='vb'+vc;
+  vc++;
+  var id='vb'+vc;
   var wrap=document.getElementById('v-blocks');
   var div=document.createElement('div');div.className='vblock';div.id=id;
 
+  // 車號 + 刪除
   var head=document.createElement('div');head.className='vblock-head';
-  var sel=document.createElement('select');
-  VEHICLES.forEach(function(v){var o=new Option(v,v);sel.appendChild(o);});
-  var del=document.createElement('button');del.type='button';del.className='delbtn';del.textContent='×';
-  del.onclick=function(){div.parentNode.removeChild(div);};
-  head.appendChild(sel);head.appendChild(del);
+  var vsel=document.createElement('select');
+  VEHICLES.forEach(function(v){vsel.appendChild(new Option(v,v));});
+  var delbtn=document.createElement('button');delbtn.type='button';delbtn.className='delbtn';delbtn.textContent='×';
+  delbtn.onclick=function(){wrap.removeChild(div);};
+  head.appendChild(vsel);head.appendChild(delbtn);
+  div.appendChild(head);
 
-  var sl=document.createElement('div');sl.className='sublbl';sl.textContent='人員';
+  // 人員
+  var sl=document.createElement('div');sl.className='sublbl';sl.textContent='人員';div.appendChild(sl);
   var cg=document.createElement('div');cg.className='chips';cg.style.marginBottom='10px';
+  // 用 staff-chip class，避免和其他 .chip.on 混淆
   STAFF.forEach(function(s){
-    var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=s;
-    b.style.padding='4px 10px';b.style.fontSize='12px';
-    b.onclick=function(){b.className=b.className==='chip'?'chip on':'chip';};
+    var b=document.createElement('button');b.type='button';b.className='staff-chip';b.textContent=s;
+    b.onclick=function(){this.className=this.className==='staff-chip'?'staff-chip on':'staff-chip';};
     cg.appendChild(b);
   });
-  var ll=document.createElement('div');ll.className='sublbl';ll.textContent='施工地點';
-  var ta=document.createElement('textarea');ta.placeholder='施工地點（可多處）';
+  div.appendChild(cg);
 
-  // 快速選單
-  var picker=document.createElement('div');picker.className='site-picker';
+  // 地點
+  var ll=document.createElement('div');ll.className='sublbl';ll.textContent='施工地點';div.appendChild(ll);
+  var ta=document.createElement('textarea');ta.placeholder='施工地點（可多處）';div.appendChild(ta);
 
-  var catLabel=document.createElement('div');catLabel.className='sublbl';catLabel.style.marginTop='8px';catLabel.textContent='快速選擇工地';
-  picker.appendChild(catLabel);
-
+  // 工地快速選單
+  var ss=document.createElement('div');ss.className='site-section';
+  var ssl=document.createElement('div');ssl.className='sublbl';ssl.style.marginTop='8px';ssl.textContent='快速選擇工地';ss.appendChild(ssl);
   var catBar=document.createElement('div');catBar.className='site-cats';
   var chipArea=document.createElement('div');chipArea.className='site-chips';
-
-  var SITES={
-    '冠僖':['冠僖大甲','冠僖后里','冠僖北屯','冠僖南投','冠僖清水','冠僖草屯','冠僖龍井','冠僖沙鹿','冠僖市區','冠僖烏日','冠僖埔里','冠僖外埔','冠僖青海路','冠僖新社','冠僖溪州'],
-    '欣群':['欣群草屯','欣群和平'],
-    '連吉':['連吉溪州','連吉二林','連吉鹿港','連吉彰化'],
-    '萬富':['萬富烏日','萬富公路局','萬富台3線','萬富台10','萬富神岡'],
-    '其他':['長洰虎山路','興農農藥廠','巨英仁愛鄉','德勝奧萬大','偉銓大里','磐拓美光','台肥台中廠','正隆','河北停車場','樂成宮','三多利','敦鴻','梁興','崑屹','華邦']
-  };
   var cats=Object.keys(SITES);
   var curCat=cats[0];
-
-  function renderSiteChips(){
+  function showSites(){
     chipArea.innerHTML='';
     SITES[curCat].forEach(function(site){
       var b=document.createElement('button');b.type='button';b.className='site-chip';b.textContent=site;
       b.onclick=function(){
         var cur=ta.value.trim();
-        if(cur){ta.value=cur+' / '+site;}else{ta.value=site;}
+        ta.value=cur?cur+' / '+site:site;
       };
       chipArea.appendChild(b);
     });
   }
-
   cats.forEach(function(cat){
-    var b=document.createElement('button');b.type='button';b.className='site-cat'+(cat===curCat?' on':'');b.textContent=cat;
+    var b=document.createElement('button');b.type='button';
+    b.className='site-cat'+(cat===curCat?' act':'');b.textContent=cat;
     b.onclick=function(){
       curCat=cat;
       Array.prototype.slice.call(catBar.querySelectorAll('.site-cat')).forEach(function(x){x.className='site-cat';});
-      b.className='site-cat on';
-      renderSiteChips();
+      b.className='site-cat act';
+      showSites();
     };
     catBar.appendChild(b);
   });
-
-  picker.appendChild(catBar);
-  picker.appendChild(chipArea);
-  renderSiteChips();
-
-  div.appendChild(head);div.appendChild(sl);div.appendChild(cg);div.appendChild(ll);div.appendChild(ta);div.appendChild(picker);
+  ss.appendChild(catBar);ss.appendChild(chipArea);
+  showSites();
+  div.appendChild(ss);
   wrap.appendChild(div);
 
+  // 填入預設值
   if(p){
     if(p.vehicle){
       var found=false;
-      for(var i=0;i<sel.options.length;i++){if(sel.options[i].value===p.vehicle){sel.selectedIndex=i;found=true;break;}}
-      if(!found){var o2=new Option(p.vehicle,p.vehicle);sel.appendChild(o2);sel.value=p.vehicle;}
+      for(var i=0;i<vsel.options.length;i++){if(vsel.options[i].value===p.vehicle){vsel.selectedIndex=i;found=true;break;}}
+      if(!found){vsel.appendChild(new Option(p.vehicle,p.vehicle));vsel.value=p.vehicle;}
     }
-    Array.prototype.slice.call(cg.querySelectorAll('.chip')).forEach(function(c){
-      if(p.staff.indexOf(c.textContent)>=0)c.className='chip on';
+    Array.prototype.slice.call(cg.querySelectorAll('.staff-chip')).forEach(function(c){
+      if(p.staff.indexOf(c.textContent)>=0)c.className='staff-chip on';
     });
     ta.value=p.location||'';
   }
 }
-addVBlock();
 
 document.getElementById('btn-veh').onclick=function(){addVBlock();};
+addVBlock();
 
 function getVehicles(){
   return Array.prototype.slice.call(document.querySelectorAll('.vblock')).map(function(b){
     return{
       vehicle:b.querySelector('select').value,
-      staff:Array.prototype.slice.call(b.querySelectorAll('.chip.on')).map(function(c){return c.textContent;}),
+      // 用 staff-chip class，不會抓到 site-cat
+      staff:Array.prototype.slice.call(b.querySelectorAll('.staff-chip.on')).map(function(c){return c.textContent;}),
       location:b.querySelector('textarea').value.trim()
     };
   }).filter(function(v){return v.staff.length||v.location;});
 }
 
-/* ── 零用金 ── */
+// 零用金
 var cc=0;
 function addCashRow(p){
-  cc++;var id='cr'+cc;
+  cc++;
   var wrap=document.getElementById('cash-rows');
-  var div=document.createElement('div');div.className='cashrow';div.id=id;
-
+  var div=document.createElement('div');div.className='cashrow';
   var sel=document.createElement('select');sel.style.width='72px';sel.style.flexShrink='0';sel.style.fontSize='13px';sel.style.padding='9px 6px';
-  var empty=new Option('','');sel.appendChild(empty);
+  sel.appendChild(new Option('',''));
   STAFF.forEach(function(s){sel.appendChild(new Option(s,s));});
-
   var amt=document.createElement('input');amt.type='number';amt.placeholder='金額';amt.style.flex='1';amt.style.minWidth='0';
   var note=document.createElement('input');note.type='text';note.placeholder='說明';note.style.flex='1.5';note.style.minWidth='0';note.style.fontSize='13px';
-  var del=document.createElement('button');del.type='button';del.className='delbtn';del.textContent='×';
-  del.onclick=function(){div.parentNode.removeChild(div);};
-
-  div.appendChild(sel);div.appendChild(amt);div.appendChild(note);div.appendChild(del);
+  var delbtn=document.createElement('button');delbtn.type='button';delbtn.className='delbtn';delbtn.textContent='×';
+  delbtn.onclick=function(){wrap.removeChild(div);};
+  div.appendChild(sel);div.appendChild(amt);div.appendChild(note);div.appendChild(delbtn);
   wrap.appendChild(div);
-
   if(p){sel.value=p.who||'';amt.value=p.amt;note.value=p.note||'';}
 }
-
 document.getElementById('btn-cash').onclick=function(){addCashRow();};
 
 function getCash(){
@@ -399,28 +374,40 @@ function getCash(){
   }).filter(function(r){return r.amt;});
 }
 
-/* ── 儲存 ── */
+// 儲存
 function saveEntry(){
   var date=document.getElementById('inp-date').value;
   if(!date){toast('請選擇日期');return;}
-  var entry={date:date,absent:getAbsent(),note:document.getElementById('inp-note').value.trim(),vehicles:getVehicles(),cash:getCash()};
+  var entry={
+    date:date,
+    absent:getAbsent(),
+    note:document.getElementById('inp-note').value.trim(),
+    vehicles:getVehicles(),
+    cash:getCash()
+  };
   var idx=-1;
   for(var i=0;i<DB.length;i++){if(DB[i].date===date){idx=i;break;}}
   if(idx>=0)DB[idx]=entry;else DB.push(entry);
   DB.sort(function(a,b){return a.date<b.date?-1:1;});
-  dbSave();resetForm();toast('已儲存 '+date);
+  dbSave();
+  resetForm();
+  toast('已儲存 '+date);
 }
 document.getElementById('btn-save').onclick=saveEntry;
 
 function resetForm(){
   document.getElementById('inp-note').value='';
+  // 重設日期為今天
+  var n=new Date();
+  var nd=[n.getFullYear(),String(n.getMonth()+1).padStart(2,'0'),String(n.getDate()).padStart(2,'0')].join('-');
+  document.getElementById('inp-date').value=nd;
   Array.prototype.slice.call(document.querySelectorAll('#absent-chips .chip')).forEach(function(c){c.className='chip';});
   document.getElementById('v-blocks').innerHTML='';vc=0;
   document.getElementById('cash-rows').innerHTML='';cc=0;
   addVBlock();
 }
 
-/* ── 紀錄 ── */
+// 紀錄
 function fillStaffFilter(){
   var sel=document.getElementById('f-staff'),cur=sel.value;
   sel.innerHTML='<option value="">全部人員</option>';
@@ -437,7 +424,9 @@ function renderList(){
     var wd=WD[new Date(e.date+'T00:00:00').getDay()];
     var absent=e.absent&&e.absent.length?'<div class="absent-pill">請假：'+e.absent.join('、')+'</div>':'';
     var note=e.note?'<div class="card-note">'+e.note+'</div>':'';
-    var vrows=e.vehicles.map(function(v){return '<div class="vrow"><div class="vname">'+v.vehicle+'</div><div><div class="vstaff">'+v.staff.join(' ')+'</div>'+(v.location?'<div class="vloc">'+v.location+'</div>':'')+'</div></div>';}).join('');
+    var vrows=e.vehicles.map(function(v){
+      return '<div class="vrow"><div class="vname">'+v.vehicle+'</div><div><div class="vstaff">'+v.staff.join(' ')+'</div>'+(v.location?'<div class="vloc">'+v.location+'</div>':'')+'</div></div>';
+    }).join('');
     var cash=e.cash&&e.cash.length?'<div class="cashline">💰 '+e.cash.map(function(c){return (c.who?c.who+' ':'')+(c.note?c.note+' ':'')+'$'+c.amt.toLocaleString();}).join('　')+'</div>':'';
     return '<div class="card"><div class="card-head"><div class="card-date">'+e.date.slice(5).replace('-','/')+' ('+wd+')</div><button type="button" class="smbtn" onclick="editEntry(\''+e.date+'\')">編輯</button></div>'+absent+note+vrows+cash+'</div>';
   }).join('');
@@ -446,7 +435,8 @@ document.getElementById('f-month').onchange=renderList;
 document.getElementById('f-staff').onchange=renderList;
 
 function editEntry(date){
-  var e=null;for(var i=0;i<DB.length;i++){if(DB[i].date===date){e=DB[i];break;}}
+  var e=null;
+  for(var i=0;i<DB.length;i++){if(DB[i].date===date){e=DB[i];break;}}
   if(!e)return;
   switchTab('add');
   setTimeout(function(){
@@ -462,7 +452,7 @@ function editEntry(date){
   },80);
 }
 
-/* ── 輸出 ── */
+// 輸出
 function buildExport(){
   var month=document.getElementById('exp-month').value;
   if(!month){document.getElementById('exp-text').textContent='選擇月份後顯示…';return;}
@@ -472,8 +462,7 @@ function buildExport(){
     var wd=WD[new Date(e.date+'T00:00:00').getDay()];
     var t=e.date.slice(5).replace('-','/')+' ('+wd+')';
     if(e.absent&&e.absent.length)t+='  ＊'+e.absent.join('/')+'請假';
-    if(e.note)t+='  '+e.note;
-    t+='\n';
+    if(e.note)t+='  '+e.note;t+='\n';
     e.vehicles.forEach(function(v){t+='  '+v.vehicle+'　'+v.staff.join(' ')+'　'+v.location+'\n';});
     if(e.cash&&e.cash.length)t+='  ［零用金］'+e.cash.map(function(c){return (c.who?c.who+' ':'')+(c.note?c.note+' ':'')+'$'+c.amt.toLocaleString();}).join('  ')+'\n';
     return t;
@@ -494,18 +483,16 @@ document.getElementById('btn-dl').onclick=function(){
   a.download=(month||'工作日誌')+'_工作日誌.txt';a.click();
 };
 
-/* ── 月結統計 ── */
+// 月結統計
 function renderStats(){
   var month=document.getElementById('st-month').value;
   var body=document.getElementById('stats-body');
   if(!month){body.innerHTML='<div class="empty">選擇月份後顯示統計</div>';return;}
   var list=DB.filter(function(e){return e.date.slice(0,7)===month;});
   if(!list.length){body.innerHTML='<div class="empty">此月份無紀錄</div>';return;}
-
   var workDays=list.filter(function(e){return e.vehicles.some(function(v){return v.staff.length>0;});}).length;
   var rainDays=list.filter(function(e){return e.note&&(e.note.indexOf('下雨')>=0||e.note.indexOf('休息')>=0);}).length;
   var totalCash=list.reduce(function(s,e){return s+(e.cash||[]).reduce(function(a,c){return a+c.amt;},0);},0);
-
   var staffDays={};
   list.forEach(function(e){e.vehicles.forEach(function(v){v.staff.forEach(function(s){staffDays[s]=(staffDays[s]||0)+1;});});});
   var absentCount={};
@@ -517,29 +504,20 @@ function renderStats(){
   var topSites=Object.keys(siteCount).map(function(k){return[k,siteCount[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,8);
   var vDays={};
   list.forEach(function(e){e.vehicles.forEach(function(v){vDays[v.vehicle]=(vDays[v.vehicle]||0)+1;});});
-
   var maxD=0;Object.keys(staffDays).forEach(function(k){if(staffDays[k]>maxD)maxD=staffDays[k];});if(!maxD)maxD=1;
-
   var staffRows=Object.keys(staffDays).sort(function(a,b){return staffDays[b]-staffDays[a];}).map(function(n){
-    var pct=Math.round(staffDays[n]/maxD*100);
-    return '<div class="srow"><div class="srow-name">'+n+'</div><div class="barwrap"><div class="barfill" style="width:'+pct+'%"></div></div><div class="snum">'+staffDays[n]+' 天</div></div>';
+    return '<div class="srow"><div class="srow-name">'+n+'</div><div class="barwrap"><div class="barfill" style="width:'+Math.round(staffDays[n]/maxD*100)+'%"></div></div><div class="snum">'+staffDays[n]+' 天</div></div>';
   }).join('');
-
   var absentRows=Object.keys(absentCount).length?Object.keys(absentCount).sort(function(a,b){return absentCount[b]-absentCount[a];}).map(function(n){
     return '<div class="srow"><div class="srow-name">'+n+'</div><div class="absent-val">'+absentCount[n]+' 次</div></div>';
   }).join(''):'<div style="font-size:13px;color:#9b9a96;padding:10px 0">本月無請假紀錄</div>';
-
   var vRows=Object.keys(vDays).sort(function(a,b){return vDays[b]-vDays[a];}).map(function(v){
-    var pct=Math.round(vDays[v]/workDays*100);
-    return '<div class="srow"><div class="srow-name">'+v+'</div><div class="barwrap"><div class="barfill" style="width:'+pct+'%"></div></div><div class="snum">'+vDays[v]+' 天</div></div>';
+    return '<div class="srow"><div class="srow-name">'+v+'</div><div class="barwrap"><div class="barfill" style="width:'+Math.round(vDays[v]/workDays*100)+'%"></div></div><div class="snum">'+vDays[v]+' 天</div></div>';
   }).join('');
-
   var cashDetailRows=cashByDate.length?cashByDate.map(function(c){
     return '<div class="cashdr"><div><div style="font-weight:500">'+(c.who||'—')+(c.note?' · '+c.note:'')+'</div><div class="cashmeta">'+c.date.slice(5).replace('-','/')+'</div></div><div class="cashamt">$'+c.amt.toLocaleString()+'</div></div>';
   }).join(''):'<div style="font-size:13px;color:#9b9a96;padding:10px 0">本月無零用金紀錄</div>';
-
   var siteRows=topSites.map(function(s){return '<div class="srow"><div>'+s[0]+'</div><div class="snum">'+s[1]+' 次</div></div>';}).join('');
-
   body.innerHTML=
     '<div class="sgrid">'+
       '<div class="scard"><div class="slbl">出勤工作日</div><div class="sval">'+workDays+'<span class="sunit">天</span></div></div>'+
