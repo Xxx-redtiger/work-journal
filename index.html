@@ -283,9 +283,8 @@ document.getElementById('st-month').value=curMonth;
 
 // ── 分頁 ──
 function tap(el,fn){
-  var touched=false;
-  el.addEventListener('touchend',function(e){e.preventDefault();touched=true;fn();});
-  el.addEventListener('click',function(){if(!touched)fn();touched=false;});
+  el.addEventListener('touchend',function(e){e.preventDefault();e.stopPropagation();fn();});
+  el.addEventListener('click',function(e){fn();});
 }
 function switchTab(name){
   ['add','list','export','stats','settings'].forEach(function(t){
