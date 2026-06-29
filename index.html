@@ -156,6 +156,13 @@ textarea{resize:vertical;min-height:56px;line-height:1.5}
 
   <!-- 設定 -->
   <div class="pane" id="pane-settings">
+    <!-- 雲端同步 -->
+    <div class="setting-section">
+      <div class="setting-title">☁️ 雲端同步（手機 ↔ 電腦）</div>
+      <button type="button" class="expbtn pri" id="sync-btn" style="margin-bottom:8px">☁️ 上傳同步</button>
+      <button type="button" class="expbtn" id="sync-dl-btn" style="margin-bottom:4px">☁️ 下載同步</button>
+      <div style="font-size:11px;color:#9b9a96;margin-top:6px">上傳：把這台的資料存到雲端<br>下載：把雲端資料合併到這台</div>
+    </div>
     <!-- 人員管理 -->
     <div class="setting-section">
       <div class="setting-title">人員名單</div>
@@ -266,6 +273,46 @@ JSON.parse(JSON.stringify(PRESET)).forEach(function(e){merged[e.date]=e;});
 var DB=Object.keys(merged).sort().map(function(k){return merged[k];});
 localStorage.setItem('wj_final',JSON.stringify(DB));
 function dbSave(){localStorage.setItem('wj_final',JSON.stringify(DB));}
+
+// ── 雲端同步 ──
+var GAS_URL='https://script.google.com/macros/s/AKfycbwUtpsz83tXDhK1U5CDfH8wYK_VhVWxk9_K3bQxZ6ykcPzdsq9LX2YVID4WZYdJs1qo/exec';
+
+function syncToCloud(){
+  var el=document.getElementById('sync-btn');
+  if(el)el.textContent='同步中…';
+  fetch(GAS_URL,{
+    method:'POST',
+    body:JSON.stringify({db:DB}),
+    headers:{'Content-Type':'text/plain'}
+  }).then(function(r){return r.json();}).then(function(res){
+    if(res.ok){toast('☁️ 已同步到雲端');}else{toast('同步失敗');}
+    if(el)el.textContent='☁️ 上傳同步';
+  }).catch(function(){toast('同步失敗，請檢查網路');if(el)el.textContent='☁️ 上傳同步';});
+}
+
+function syncFromCloud(){
+  var el=document.getElementById('sync-dl-btn');
+  if(el)el.textContent='下載中…';
+  fetch(GAS_URL).then(function(r){return r.json();}).then(function(res){
+    if(res.ok&&res.data&&res.data[0]&&res.data[0][0]){
+      var cloudDB=JSON.parse(res.data[0][0]);
+      // 合併雲端與本機，兩邊都保留
+      var m={};
+      DB.forEach(function(e){if(e&&e.date)m[e.date]=e;});
+      cloudDB.forEach(function(e){if(e&&e.date)m[e.date]=e;});
+      DB=Object.keys(m).sort().map(function(k){return m[k];});
+      dbSave();
+      toast('☁️ 已從雲端同步');
+      if(el)el.textContent='☁️ 下載同步';
+      // 重新渲染目前分頁
+      var active=document.querySelector('.tab.on');
+      if(active)active.click();
+    }else{
+      toast('雲端尚無資料');
+      if(el)el.textContent='☁️ 下載同步';
+    }
+  }).catch(function(){toast('同步失敗，請檢查網路');if(el)el.textContent='☁️ 下載同步';});
+}
 
 function toast(msg){
   var el=document.getElementById('toast');el.textContent=msg;el.className='toast show';
@@ -426,6 +473,8 @@ function saveEntry(){
   if(idx>=0)DB[idx]=entry;else DB.push(entry);
   DB.sort(function(a,b){return a.date<b.date?-1:1;});
   dbSave();resetForm();toast('已儲存 '+date);
+  // 自動上傳雲端
+  syncToCloud();
 }
 tap(document.getElementById('btn-save'),saveEntry);
 
@@ -543,6 +592,9 @@ document.getElementById('st-month').onchange=renderStats;
 
 // ── 設定 ──
 function renderSettings(){
+  // 同步按鈕
+  tap(document.getElementById('sync-btn'),syncToCloud);
+  tap(document.getElementById('sync-dl-btn'),syncFromCloud);
   // 人員
   var sl=document.getElementById('staff-list');sl.innerHTML='';
   STAFF.forEach(function(s,i){
