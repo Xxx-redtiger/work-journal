@@ -279,40 +279,48 @@ var GAS_URL='https://script.google.com/macros/s/AKfycbwUtpsz83tXDhK1U5CDfH8wYK_V
 
 function syncToCloud(){
   var el=document.getElementById('sync-btn');
-  if(el)el.textContent='同步中…';
+  if(el){el.disabled=true;el.textContent='上傳中…';}
   fetch(GAS_URL,{
     method:'POST',
     body:JSON.stringify({db:DB}),
     headers:{'Content-Type':'text/plain'}
   }).then(function(r){return r.json();}).then(function(res){
-    if(res.ok){toast('☁️ 已同步到雲端');}else{toast('同步失敗');}
-    if(el)el.textContent='☁️ 上傳同步';
-  }).catch(function(){toast('同步失敗，請檢查網路');if(el)el.textContent='☁️ 上傳同步';});
+    toast(res.ok?'☁️ 已上傳到雲端':'上傳失敗');
+    if(el){el.disabled=false;el.textContent='☁️ 上傳同步';}
+  }).catch(function(){
+    toast('上傳失敗，請檢查網路');
+    if(el){el.disabled=false;el.textContent='☁️ 上傳同步';}
+  });
 }
 
-function syncFromCloud(){
+function syncFromCloud(silent){
   var el=document.getElementById('sync-dl-btn');
-  if(el)el.textContent='下載中…';
-  fetch(GAS_URL).then(function(r){return r.json();}).then(function(res){
-    if(res.ok&&res.data&&res.data[0]&&res.data[0][0]){
-      var cloudDB=JSON.parse(res.data[0][0]);
-      // 合併雲端與本機，兩邊都保留
-      var m={};
-      DB.forEach(function(e){if(e&&e.date)m[e.date]=e;});
-      cloudDB.forEach(function(e){if(e&&e.date)m[e.date]=e;});
-      DB=Object.keys(m).sort().map(function(k){return m[k];});
-      dbSave();
-      toast('☁️ 已從雲端同步');
-      if(el)el.textContent='☁️ 下載同步';
-      // 重新渲染目前分頁
-      var active=document.querySelector('.tab.on');
-      if(active)active.click();
-    }else{
-      toast('雲端尚無資料');
-      if(el)el.textContent='☁️ 下載同步';
-    }
-  }).catch(function(){toast('同步失敗，請檢查網路');if(el)el.textContent='☁️ 下載同步';});
+  if(el&&!silent){el.disabled=true;el.textContent='下載中…';}
+  fetch(GAS_URL+'?t='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(res.ok&&res.data&&res.data[0]&&res.data[0][0]){
+        var cloudDB=JSON.parse(res.data[0][0]);
+        var m={};
+        DB.forEach(function(e){if(e&&e.date)m[e.date]=e;});
+        cloudDB.forEach(function(e){if(e&&e.date)m[e.date]=e;});
+        DB=Object.keys(m).sort().map(function(k){return m[k];});
+        dbSave();
+        if(!silent)toast('☁️ 已從雲端同步');
+        var activeTab=document.querySelector('.tab.on');
+        if(activeTab){var id=activeTab.id.replace('tab-','');switchTab(id);}
+      }else{
+        if(!silent)toast('雲端尚無資料');
+      }
+      if(el&&!silent){el.disabled=false;el.textContent='☁️ 下載同步';}
+    }).catch(function(){
+      if(!silent)toast('下載失敗，請檢查網路');
+      if(el&&!silent){el.disabled=false;el.textContent='☁️ 下載同步';}
+    });
 }
+
+// 開啟時自動從雲端下載（背景靜默）
+setTimeout(function(){syncFromCloud(true);},1500);
 
 function toast(msg){
   var el=document.getElementById('toast');el.textContent=msg;el.className='toast show';
@@ -593,8 +601,14 @@ document.getElementById('st-month').onchange=renderStats;
 // ── 設定 ──
 function renderSettings(){
   // 同步按鈕
-  tap(document.getElementById('sync-btn'),syncToCloud);
-  tap(document.getElementById('sync-dl-btn'),syncFromCloud);
+  // 同步按鈕：先移除舊的再綁定，避免重複觸發
+  var sb=document.getElementById('sync-btn');
+  var nb=sb.cloneNode(true);sb.parentNode.replaceChild(nb,sb);
+  nb.addEventListener('click',function(){syncToCloud();});
+
+  var sdb=document.getElementById('sync-dl-btn');
+  var ndb=sdb.cloneNode(true);sdb.parentNode.replaceChild(ndb,sdb);
+  ndb.addEventListener('click',function(){syncFromCloud(false);});
   // 人員
   var sl=document.getElementById('staff-list');sl.innerHTML='';
   STAFF.forEach(function(s,i){
